@@ -1,0 +1,15 @@
+name: trauma-ml
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - jupyter
+  - openpyxl
+  - ipykernel
+  - pip
