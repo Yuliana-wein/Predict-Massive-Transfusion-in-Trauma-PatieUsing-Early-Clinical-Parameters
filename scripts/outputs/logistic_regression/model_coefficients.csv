@@ -1,0 +1,10 @@
+Feature,Coefficient,Abs_Coefficient,Rank
+Arterial_Base_Excess,-1.6762,1.6762,1
+Lactate_mmol_L,1.5903,1.5903,2
+Shock_Index,-0.8444,0.8444,3
+Injury_Type_Coded,0.5515,0.5515,4
+Age,-0.1203,0.1203,5
+Sex_Coded,0.0307,0.0307,6
+Heart_Rate_BPM,-0.0274,0.0274,7
+Systolic_BP_mmHg,-0.0082,0.0082,8
+Respiratory_Rate_BPM,0.0048,0.0048,9

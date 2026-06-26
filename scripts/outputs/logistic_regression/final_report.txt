@@ -1,0 +1,116 @@
+========================================================================
+LOGISTIC REGRESSION WORKFLOW -- FINAL REPORT
+========================================================================
+
+Generated : 2026-06-26 22:13
+Seed      : 42   |   Test size: 0.2
+Data file : data\CRASH2_Final_1000.xlsx
+
+========================================================================
+1. EDA SUMMARY
+========================================================================
+
+See figures/ for full EDA output.
+
+========================================================================
+2. PREPROCESSING DECISIONS
+========================================================================
+
+Clipping (clinical constants -- not data-derived, not leakage):
+  Systolic_BP_mmHg -> [40, 250] mmHg
+  Heart_Rate_BPM   -> [20, 220] bpm
+  Shock_Index recomputed from clipped HR / SBP after clipping.
+
+Encoding (deterministic, no statistics learned):
+  Sex -> Sex_Coded           (Female=1, Male=0)
+  Injury_Type -> Injury_Type_Coded  (Penetrating=1, Blunt=0)
+
+
+========================================================================
+3. FEATURE SET
+========================================================================
+
+Single feature set (9 features):
+  Systolic_BP_mmHg
+  Heart_Rate_BPM
+  Age
+  Respiratory_Rate_BPM
+  Lactate_mmol_L
+  Arterial_Base_Excess
+  Injury_Type_Coded
+  Sex_Coded
+  Shock_Index
+
+Shock_Index is included as a regular clinical feature.
+Regularization and cross-validation determine its contribution.
+
+Correlations: see figures/05_correlation_heatmap.png
+
+========================================================================
+4. MODEL SELECTION
+========================================================================
+
+Baseline LR CV PR-AUC : 0.9057
+Best LR CV PR-AUC     : 0.9061
+Improvement           : +0.0004
+
+Best hyperparameters  : {'lr__C': 10, 'lr__class_weight': 'balanced', 'lr__max_iter': 5000, 'lr__penalty': 'l1', 'lr__solver': 'liblinear'}
+Features              : ['Systolic_BP_mmHg', 'Heart_Rate_BPM', 'Age', 'Respiratory_Rate_BPM', 'Lactate_mmol_L', 'Arterial_Base_Excess', 'Injury_Type_Coded', 'Sex_Coded', 'Shock_Index']
+
+Thresholds (selected on OOF, training data only):
+  F2-optimal  : 0.1023
+  Spec>=0.75  : 0.4666332665330661
+
+Test set results (F2-threshold):
+  Threshold      : 0.1023
+  PR-AUC         : 0.921
+  ROC-AUC        : 0.83
+  Recall         : 1.0
+  Specificity    : 0.0
+  Precision      : 0.7
+  F1             : 0.824
+  F2             : 0.921
+  Bal-Accuracy   : 0.5
+  Brier          : 0.166
+
+========================================================================
+5. ESTIMATED TASK DIFFICULTY
+========================================================================
+
+Class imbalance : 3:1 -- compensated with class_weight="balanced"
+Calibration     : see figures/10_calibration_curve.png (Brier=0.166)
+Overall         : moderately difficult binary classification task.
+                  Recall and PR-AUC are the primary metrics.
+
+========================================================================
+6. FUTURE COMPARISON WITH TEAMMATE MODELS
+========================================================================
+
+Model selection criterion: CV PR-AUC on training set only.
+Complete this table when teammates submit their models.
+
+Model                     CV PR-AUC   PR-AUC    ROC-AUC    Recall    Specificity   F2      Brier    Threshold 
+------------------------  ----------  --------  ---------  --------  ------------  ------  -------  ----------
+Logistic Regression       0.906       0.921     0.83       1.0       0.0           0.921   0.166    0.102     
+Random Forest             [TBD]       [TBD]     [TBD]      [TBD]     [TBD]         [TBD]   [TBD]    [TBD]     
+XGBoost                   [TBD]       [TBD]     [TBD]      [TBD]     [TBD]         [TBD]   [TBD]    [TBD]     
+
+========================================================================
+7. ITERATION IDEAS
+========================================================================
+
+1. Log-transform for skewed features
+   Lactate_mmol_L and Arterial_Base_Excess show right skew.
+   Log-transform before scaling may improve linear separability.
+
+2. Probability calibration
+   If calibration curve deviates from the diagonal, apply
+   CalibratedClassifierCV(method="sigmoid") on top of best pipeline.
+
+3. Explicit class weight tuning
+   Replace class_weight="balanced" with manual ratios
+   (e.g., {0:1, 1:3}) via the existing OOF CV framework.
+
+4. Threshold clinical alignment
+   If neither threshold achieves Recall >= 0.90, consult
+   the clinical team to set an explicit minimum recall floor.
