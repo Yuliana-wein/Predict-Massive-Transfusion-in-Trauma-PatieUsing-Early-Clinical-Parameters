@@ -194,3 +194,30 @@ Technion AI Developer Course, 2026
 - Roberts I. et al. *The CRASH-2 trial: a randomised controlled trial.* Lancet, 2010.
 - Nunez T.C. et al. *Simple calculation of the ABC Score.* J Trauma, 2009.
 - Chen T., Guestrin C. *XGBoost: A Scalable Tree Boosting System.* KDD, 2016.
+
+---
+
+## Conclusions
+
+**Goal:** Can ML outperform the ABC Score in predicting Massive Transfusion from early clinical parameters?  
+**Answer: Yes — significantly.**
+
+
+---
+
+
+### Final Results
+
+| Model | ROC-AUC | Recall (MT) |
+|-------|---------|-------------|
+| ABC Score (baseline) | 0.747 | 0.38 |
+| Logistic Regression | 0.880 | 0.78 |
+| Random Forest | 0.883 | 0.80 |
+| **XGBoost (final)** | **0.902** | **0.80** |
+
+- XGBoost with threshold = 0.44 finds **40 out of 50 MT patients** (Recall = 80%)
+- ABC Score missed **62% of MT patients** — unacceptable for a screening tool
+- Ensemble methods (Voting, Stacking) did not outperform XGBoost alone
+- Top predictors: **Lactate** and **Heart Rate** — confirmed across all models
+
+> *ML-based early warning can double the detection rate of Massive Transfusion compared to the current clinical standard.*
